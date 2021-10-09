@@ -8,9 +8,7 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-import java.io.IOException;
 import java.security.InvalidParameterException;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @SpringBootApplication
@@ -44,11 +42,6 @@ public class RequestAnalyserApplication implements CommandLineRunner {
             } else {
                 LOG.error("Parameter must be a log file! Skipping " + arg);
             }
-            ;
-
-
         }
-
-
     }
 }
