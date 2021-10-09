@@ -9,6 +9,9 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import java.io.IOException;
+import java.security.InvalidParameterException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @SpringBootApplication
 public class RequestAnalyserApplication implements CommandLineRunner {
@@ -28,8 +31,24 @@ public class RequestAnalyserApplication implements CommandLineRunner {
     }
 
     @Override
-    public void run(String... args) throws Exception, IOException {
-        LOG.info("Attempting to analyse file");
-        requestAnalyser.analyse(args[0]);
+    public void run(String... args) throws Exception {
+        LOG.info("Starting Request Analyser...");
+
+        if (args.length == 0) {
+            throw new InvalidParameterException("Please supply at least one log file to analyse");
+        }
+        for (String arg : args) {
+            Pattern logFileValidation = Pattern.compile(".*\\.log");
+            if (logFileValidation.matcher(arg).matches()) {
+                requestAnalyser.analyse(arg);
+            } else {
+                LOG.error("Parameter must be a log file! Skipping " + arg);
+            }
+            ;
+
+
+        }
+
+
     }
 }
