@@ -2,47 +2,34 @@ package com.digio.requestanalyser.service;
 
 import com.digio.requestanalyser.RequestAnalyserApplication;
 import com.digio.requestanalyser.model.TrimmedRequestDetail;
+import com.digio.requestanalyser.reader.RequestLogFileReader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
-import java.io.IOException;
 import java.net.URISyntaxException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.*;
-import java.util.stream.Stream;
 
 @Component
 public class RequestAnalyser {
 
-    private static Logger LOG = LoggerFactory
+    private static final Logger LOG = LoggerFactory
             .getLogger(RequestAnalyserApplication.class);
 
-    public void analyse(String arg) throws URISyntaxException {
+    public HashMap<String, String> analyse(String arg) throws URISyntaxException {
         LOG.info("Parsing log file: " + arg);
 
-        Path path = Paths.get(Objects.requireNonNull(getClass().getClassLoader().getResource(arg)).toURI());
-        ArrayList<TrimmedRequestDetail> trimmedRequestDetails = new ArrayList<>();
-
-        try (Stream<String> requestDetailStream = Files.lines(path)) {
-            requestDetailStream.forEach(line -> {
-                String urlSubstring = line.substring(line.indexOf("\"") + 5);
-                String url = urlSubstring.split(" ")[0];
-                String IP = line.substring(0, line.indexOf(" "));
-                trimmedRequestDetails.add(new TrimmedRequestDetail(IP, url));
-            });
-
-            LOG.info("Number of unique IP Addresses found: " +
-                    getNumberOfUniqueIPAddresses(trimmedRequestDetails).toString());
-            LOG.info("The top 3 most visited URLs are: " +
-                    getTopKMostActiveElements(getElementArray(trimmedRequestDetails, "URL"), 3));
-            LOG.info("The top 3 most active IP addresses are: " +
-                    getTopKMostActiveElements(getElementArray(trimmedRequestDetails, "IP"), 3));
-        } catch (IOException e) {
-            e.printStackTrace();
+        RequestLogFileReader fileReader = new RequestLogFileReader();
+        ArrayList<TrimmedRequestDetail> trimmedRequestDetails = fileReader.read(arg);
+       HashMap<String, String> answerMap = new HashMap<>();
+        if (trimmedRequestDetails != null) {
+            answerMap.put("unipueIPs", getNumberOfUniqueIPAddresses(trimmedRequestDetails).toString());
+            answerMap.put("top3URLs", getTopKMostActiveElements(getElementArray(trimmedRequestDetails, "URL"), 3));
+            answerMap.put("top3IPs", getTopKMostActiveElements(getElementArray(trimmedRequestDetails, "IP"), 3));
+        } else {
+            LOG.error("Error parsing log file: " + arg);
         }
+        return answerMap;
     }
 
     private String[] getElementArray(ArrayList<TrimmedRequestDetail> trimmedRequestDetails, String eleType) {
@@ -63,7 +50,7 @@ public class RequestAnalyser {
             return String.join(", ", ele);
         }
 
-        Map<String, Integer> count = new HashMap();
+        Map<String, Integer> count = new HashMap<>();
         for (String ip: ele) {
             count.put(ip, count.getOrDefault(ip, 0) + 1);
         }

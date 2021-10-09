@@ -9,6 +9,8 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import java.security.InvalidParameterException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.regex.Pattern;
 
 @SpringBootApplication
@@ -38,10 +40,15 @@ public class RequestAnalyserApplication implements CommandLineRunner {
         for (String arg : args) {
             Pattern logFileValidation = Pattern.compile(".*\\.log");
             if (logFileValidation.matcher(arg).matches()) {
-                requestAnalyser.analyse(arg);
+               HashMap<String, String> result = requestAnalyser.analyse(arg);
+                LOG.info("Number of unique IP Addresses found: " + result.get("uniqueIPs"));
+                LOG.info("The top 3 most visited URLs are: " + result.get("top3URLs"));
+                LOG.info("The top 3 most active IP addresses are: " + result.get("top3IPs"));
             } else {
                 LOG.error("Parameter must be a log file! Skipping " + arg);
             }
+
+
         }
     }
 }
