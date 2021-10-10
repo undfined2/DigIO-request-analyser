@@ -13,6 +13,11 @@ Run the RequestAnalyzerApplication by passing:
 * the name of at least one log file (such as the sample file located in the resources folder: sample-data/programming-task-example-data.log) as an argument, or multiple arguments referring to multiple files.
 * The program requires an argument and will throw an exception if one is not thrown.
 * It will also log an error:
-  * if an argument is passed without .log,
-  * if the file cannot be parsed, or
+  * if an argument is passed without .log, or
   * if the file is missing
+  
+## Out of scope
+Based on time constraints:
+* I did not handle failure to parse file, or missing files. 
+* I also did not test the file reader class
+* Finally, I did not perform integration testing or any BDD to verify the full application works
