@@ -1,4 +1,4 @@
-package com.digio.requestanalyser.service;
+package com.digio.requestanalyser.util;
 
 import com.digio.requestanalyser.RequestAnalyserApplication;
 import com.digio.requestanalyser.model.TrimmedRequestDetail;
@@ -21,7 +21,7 @@ public class RequestAnalyser {
 
         RequestLogFileReader fileReader = new RequestLogFileReader();
         ArrayList<TrimmedRequestDetail> trimmedRequestDetails = fileReader.read(arg);
-       HashMap<String, String> answerMap = new HashMap<>();
+        HashMap<String, String> answerMap = new HashMap<>();
         if (trimmedRequestDetails != null) {
             answerMap.put("unipueIPs", getNumberOfUniqueIPAddresses(trimmedRequestDetails).toString());
             answerMap.put("top3URLs", getTopKMostActiveElements(getElementArray(trimmedRequestDetails, "URL"), 3));
@@ -36,13 +36,13 @@ public class RequestAnalyser {
         // could be switch or more sensible if statement as necessary
         return eleType.equals("URL") ?
                 trimmedRequestDetails
-                .stream()
-                .map(TrimmedRequestDetail::getURL)
-                .toArray(String[]::new):
+                        .stream()
+                        .map(TrimmedRequestDetail::getURL)
+                        .toArray(String[]::new) :
                 trimmedRequestDetails
-                .stream()
-                .map(TrimmedRequestDetail::getIP)
-                .toArray(String[]::new);
+                        .stream()
+                        .map(TrimmedRequestDetail::getIP)
+                        .toArray(String[]::new);
     }
 
     private String getTopKMostActiveElements(String[] ele, int k) {
@@ -51,19 +51,19 @@ public class RequestAnalyser {
         }
 
         Map<String, Integer> count = new HashMap<>();
-        for (String ip: ele) {
+        for (String ip : ele) {
             count.put(ip, count.getOrDefault(ip, 0) + 1);
         }
 
         Queue<String> heap = new PriorityQueue<>(Comparator.comparingInt(count::get));
 
-        for (String ip: count.keySet()) {
+        for (String ip : count.keySet()) {
             heap.add(ip);
             if (heap.size() > k) heap.poll();
         }
 
         String[] top = new String[k];
-        for(int i = k - 1; i >= 0; --i) {
+        for (int i = k - 1; i >= 0; --i) {
             top[i] = heap.poll();
         }
         return String.join(", ", top);
