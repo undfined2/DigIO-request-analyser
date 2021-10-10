@@ -1,6 +1,7 @@
 package com.digio.requestanalyser.reader;
 
 import com.digio.requestanalyser.model.TrimmedRequestDetail;
+import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -11,6 +12,7 @@ import java.util.ArrayList;
 import java.util.Objects;
 import java.util.stream.Stream;
 
+@Component
 public class RequestLogFileReader {
 
     public ArrayList<TrimmedRequestDetail> read(String filename) throws URISyntaxException {

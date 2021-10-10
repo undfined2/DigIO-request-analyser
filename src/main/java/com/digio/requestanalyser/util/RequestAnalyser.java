@@ -13,13 +13,20 @@ import java.util.*;
 @Component
 public class RequestAnalyser {
 
+
+    public RequestAnalyser(RequestLogFileReader fileReader) {
+        this.fileReader = fileReader;
+    }
+
+    private final RequestLogFileReader fileReader;
+
     private static final Logger LOG = LoggerFactory
             .getLogger(RequestAnalyserApplication.class);
 
     public HashMap<String, String> analyse(String arg) throws URISyntaxException {
         LOG.info("Parsing log file: " + arg);
 
-        RequestLogFileReader fileReader = new RequestLogFileReader();
+
         ArrayList<TrimmedRequestDetail> trimmedRequestDetails = fileReader.read(arg);
         HashMap<String, String> answerMap = new HashMap<>();
         if (trimmedRequestDetails != null) {
