@@ -10,9 +10,10 @@ import org.springframework.stereotype.Component;
 import java.net.URISyntaxException;
 import java.util.*;
 
+import static com.digio.requestanalyser.constants.constants.*;
+
 @Component
 public class RequestAnalyser {
-
 
     public RequestAnalyser(RequestLogFileReader fileReader) {
         this.fileReader = fileReader;
@@ -30,9 +31,9 @@ public class RequestAnalyser {
         ArrayList<TrimmedRequestDetail> trimmedRequestDetails = fileReader.read(arg);
         HashMap<String, String> answerMap = new HashMap<>();
         if (trimmedRequestDetails != null) {
-            answerMap.put("unipueIPs", getNumberOfUniqueIPAddresses(trimmedRequestDetails).toString());
-            answerMap.put("top3URLs", getTopKMostActiveElements(getElementArray(trimmedRequestDetails, "URL"), 3));
-            answerMap.put("top3IPs", getTopKMostActiveElements(getElementArray(trimmedRequestDetails, "IP"), 3));
+            answerMap.put(UNIQUE_IPS, getNumberOfUniqueIPAddresses(trimmedRequestDetails).toString());
+            answerMap.put(TOP_3_URLS, getTopKMostActiveElements(getElementArray(trimmedRequestDetails, "URL"), 3));
+            answerMap.put(TOP_3_IPS, getTopKMostActiveElements(getElementArray(trimmedRequestDetails, "IP"), 3));
         } else {
             LOG.error("Error parsing log file: " + arg);
         }

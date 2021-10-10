@@ -12,6 +12,8 @@ import java.security.InvalidParameterException;
 import java.util.HashMap;
 import java.util.regex.Pattern;
 
+import static com.digio.requestanalyser.constants.constants.*;
+
 @SpringBootApplication
 public class RequestAnalyserApplication implements CommandLineRunner {
 
@@ -40,9 +42,9 @@ public class RequestAnalyserApplication implements CommandLineRunner {
             Pattern logFileValidation = Pattern.compile(".*\\.log");
             if (logFileValidation.matcher(arg).matches()) {
                 HashMap<String, String> result = requestAnalyser.analyse(arg);
-                LOG.info("Number of unique IP Addresses found: " + result.get("uniqueIPs"));
-                LOG.info("The top 3 most visited URLs are: " + result.get("top3URLs"));
-                LOG.info("The top 3 most active IP addresses are: " + result.get("top3IPs"));
+                LOG.info("Number of unique IP Addresses found: " + result.get(UNIQUE_IPS));
+                LOG.info("The top 3 most visited URLs are: " + result.get(TOP_3_URLS));
+                LOG.info("The top 3 most active IP addresses are: " + result.get(TOP_3_IPS));
             } else {
                 LOG.error("Parameter must be a log file! Skipping " + arg);
             }
